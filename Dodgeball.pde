@@ -3,6 +3,36 @@
 
 #include <MeggyJrSimple.h>            //Required code, line 1 of 2
 
+
+struct Point                          //Code for making points
+{
+  int x;
+  int y;
+};
+int counter = 0;                      //Set variable for turn counter
+int score = 0;                        //Set variable to keep track of score
+int ballthrow = 0;                    //Set variable to check if player is throwing a ball
+Point player = {1,4};                 //Set player starting point
+int playerhp = 3;                     //Set variable for player health
+Point opponent1 = {6,4};              //Set starting point for opponent 1
+int hp1 = 3;                          //Set variable for opponent 1 health
+Point opponent2 = {6,3};              //Set starting point for opponent 2
+int hp2 = 3;                          //Set variable for opponent 2 health
+Point opponent3 = {6,5};              //Set starting point for opponent 3
+int hp3 = 3;                          //Set variable for opponent 3 health
+Point opponent4 = {6,2};              //Set starting point for opponent 4
+int hp4 = 3;                          //Set variable for opponent 4 health
+Point playerball = {1,4};             //Unused coordinates, but point is needed to keep track of the player's ball
+int opponent1on = 0;                  //Variable to check if opponent 1 is in the stage
+int opponent2on = 0;                  //Variable to check if opponent 2 is in the stage
+int opponent3on = 0;                  //Variable to check if opponent 3 is in the stage
+int opponent4on = 0;                  //Variable to check if opponent 4 is in the stage
+int bosson = 0;                       //Variable to check if a boss is in the stage
+int movement = 1;                     //Variable to check which direction the CPU is moving (0 = up, 1 = down, 2 = left, 3 = right)
+int stage = 1;                        //Variable to check what level the player is on
+
+
+
 void setup()                          //Setup
 {
   MeggyJrSimpleSetup();               //Required code, line 2 of 2
@@ -12,6 +42,180 @@ void setup()                          //Setup
   EditColor(White, 0, 13, 1);         //Adjust white color
   EditColor(Orange, 13, 26, 0);       //Adjust orange color
   EditColor(Red, 21, 0 , 0);          //Adjust red color
+  DrawCourt();                        //Draw the court
+  DisplaySlate();                     //Display player starting spot and field
+}
+
+
+
+
+
+
+void loop()                           //Start loop
+{
+  if (counter == 0)
+  {
+    delay(300);
+  }
+  if (stage == 1)  
+  {
+    opponent1on = 1;
+  }
+  counter++;
+  if (playerball.x > 7)
+  {
+    ballthrow = 0;
+  }
+  if (ballthrow == 0)                
+  {
+    playerball.x = player.x;
+    playerball.y = player.y;
+  }
+  DrawCourt();
+  if (counter%5 == 0)
+  {
+    if (opponent1on == 1)
+    {
+      if (movement == 0)
+      {
+        movement = random(10);
+        if (opponent1.y > 5)
+        {
+          opponent1.y--;
+        }
+        if (opponent1.y < 6)
+        {
+          opponent1.y++;
+        }
+      }
+      if (movement == 1)
+      {
+        movement = random(10);
+        if (opponent1.y > 2)
+        {
+          opponent1.y--;
+        }
+        if (opponent1.y < 3)
+        {
+          opponent1.y++;
+        }
+      }
+      if (movement == 2)
+      {
+        movement = random(10);
+        opponent1.x--;
+      }
+      if (movement == 3)
+      {
+        opponent1.x++;
+        movement = random(10);
+      }
+      if (movement > 3)
+      {
+        movement = random(2);
+      }
+      if (opponent1.x > 7)
+      {
+        movement = random(10);
+        opponent1.x = 6;
+      }
+      if (opponent1.x < 4)
+      {
+        movement = random(10);
+        opponent1.x = 5;
+      }
+      if (opponent1.y > 7)
+      {
+        movement = random(10);
+        opponent1.y = 6;
+      }
+      if (opponent1.y < 0)
+      {
+        movement = random(10);
+        opponent1.y = 1;
+      }
+    }
+  }
+  if (opponent1.x == playerball.x)
+  {
+    if (opponent1.y == playerball.y)
+    {
+      hp1--;
+      ballthrow = 0;
+    }
+  }
+  if (hp1 == 0)
+  {
+    opponent1on = 0;
+  }
+  CheckButtonsDown();
+  {
+    if (Button_Up)
+    {
+      player.y++;
+    }
+    if (Button_Down)
+    {
+      player.y--;
+    }
+    if (Button_Left)
+    {
+      player.x--;
+    }
+    if (Button_Right)
+    {
+      player.x++;
+    }
+    if (Button_A)
+    {
+      ballthrow = 1;
+    }
+  }
+  if (ballthrow == 1)
+  {
+    DrawPlayerBall();
+  }
+  if (player.x > 3)
+  {
+    player.x = 3;
+  }
+  if (player.x < 0)
+  {
+    player.x = 0;
+  }
+  if (player.y > 7)
+  {
+    player.y = 7;
+  }
+  if (player.y < 0)
+  {
+    player.y = 0;
+  }
+  if (opponent1on == 1)
+  {
+    DrawPx(opponent1.x, opponent1.y, Green);
+  }
+  DrawPlayer();
+  DisplaySlate();
+  delay(100);
+  ClearSlate();
+  EndStage();
+}
+
+void DrawPlayer()
+{
+  DrawPx(player.x, player.y, Red);
+}
+
+void DrawPlayerBall()
+{
+  playerball.x++;
+  DrawPx(playerball.x, playerball.y, DimRed);
+
+}
+
+void DrawCourt()
+{
   for(int i = 0; i < 4; i++)          //Color player side white
   {
     for(int j = 0; j < 8; j++)
@@ -26,283 +230,31 @@ void setup()                          //Setup
       DrawPx(k,l,Blue);
     }
   }
-  int x = 0;                          //Set x coordinate for starting point of player
-  int y = 4;                          //Set y coordinate for starting point of player
-  int g = 7;                          //Set x coordinate for starting poing of CPU
-  int h = 0;                          //Set y coordinate for starting poing of CPU
-  DrawPx(x,y,Red);                    //Draw a red dot on starting point
-  DrawPx(g,h,Green);                  //Draw CPU starting point
-  DisplaySlate();                     //Display player starting spot and field
 }
 
-int x = 0;                            //Set variable for x coordinate of player
-int y = 4;                            //Set variable for y coordinate of player
-int g = 7;                            //Set variable for x coordinate of CPU
-int h = 0;                            //Set variable for y coordinate of CPU
-
-
-
-
-
-
-
-
-void loop()                           //Start loop
+void EndStage()
 {
-  DrawPx(g, h, Green);
-  CheckButtonsDown();                //Check which buttons are down
+  if (opponent1on == 0)
   {
-    if (Button_Up)                    //If the up button is pressed...
+    if (opponent2on == 0)
     {
-      y++;                            //Move player dot up 1
-      for(int i = 0; i < 4; i++)      //Color player side white
+      if (opponent3on == 0)
       {
-        for(int j = 0; j < 8; j++)
+        if (opponent4on == 0)
         {
-          DrawPx(i,j,White);
+          if (bosson == 0)
+          {
+            counter = 0;
+            stage++;
+          }
         }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-    }
-    if (Button_Down)                  //If the down button is pressed...
-    {
-      y--;                            //Move player dot down 1
-      for(int i = 0; i < 4; i++)      //Color player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-    }
-    if (Button_Right)                 //If the right button is pressed...
-    {
-      x++;                            //Move player dot right 1
-      for(int i = 0; i < 4; i++)      //Color player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-    }
-    if (Button_Left)                  //If the left button is pressed...
-    {
-      x--;                            //Move player dot left 1
-      for(int i = 0; i < 4; i++)      //Color player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-    }
-    if (x > 3)                        //If the player tries to go over the line...
-      x = 3;                          //Stop movement
-    if (x < 0)                        //If the player tries to go out of bounds to the left...
-      x = 0;                          //Stop movement
-    if (y > 7)                        //If the player tries to go out of bounds to the top...
-      y = 7;                          //Stop movement
-    if (y < 0)                        //If the player tries to go out of bounds to the bottom...
-      y = 0;                          //Stop movement
-    DrawPx(x,y,Red);                  //Drawing new player dot based on the x and y coordinates
-    DisplaySlate();                   //Display the new screen
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    if (Button_A)                     //If the A button is pressed...
-    {
-      
-      
-    }
-    if (Button_B)                     //If the B button is pressed...
-    {
-      int a = x;                      //Set variable for ball x coordinate when throwing
-      int b = y;                      //Set variable for ball y coordinate when throwing
-      DrawPx(a+1,b,8);              //Draw the ball moving
-      DisplaySlate();               //Display current spot of the ball
-      delay(80);                    //Wait a little before moving the ball again
-      for(int i = 0; i < 4; i++)    //Recolor player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)    //Recolor opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+2,b,8);              //Draw new spot of the ball
-      DrawPx(x,y,Red);              //Redraw player
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();               //Display new ball spot
-      delay(80);                    //Wait a little before moving the ball again
-      for(int i = 0; i < 4; i++)    //Recolor player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)     //Recolor opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+3,b,8);               //Draw new spot of the ball
-      DrawPx(x,y,Red);               //Redraw player
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();                //Display new ball spot
-      delay(80);                     //Wait a little before moving the ball again
-      for(int i = 0; i < 4; i++)     //Recolor player side white
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Recolor opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+4,b,8);                //Draw new spot of the ball
-      DrawPx(x,y,Red);                //Redraw player
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();                 //Display new ball spot
-      delay(80);                      //Wait a little before moving the ball again
-      for(int i = 0; i < 4; i++)      //Color player side white again
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue again
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+5,b,8);                //Draw new spot of ball
-      DrawPx(x,y,Red);                //Draw player again
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();                 //Show new ball spot
-      delay(80);                      //Wait a little before moving the ball again
-      for(int i = 0; i < 4; i++)      //Color player side white again
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue again
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+6,b,8);                //Draw new spot of ball
-      DrawPx(x,y,Red);                //Redraw player dot
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();                 //Show the new ball spot
-      delay(80);                      //Wait a little before drawing ball again
-      for(int i = 0; i < 4; i++)      //Color player side white again
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue again
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+7,b,8);                //Draw new ball spot
-      DrawPx(x,y,Red);                //Draw player again
-      DrawPx(g,h,Green);            //Redraw CPU
-      DisplaySlate();                 //Show new ball spot
-      delay(80);                      //Wait a little before moving ball again
-      for(int i = 0; i < 4; i++)      //Color player side white again
-      {
-        for(int j = 0; j < 8; j++)
-        {
-          DrawPx(i,j,White);
-        }
-      }
-      for(int k = 4; k < 8; k++)      //Color opponent side blue
-      {
-        for (int l = 0; l < 8; l++)
-        {
-          DrawPx(k,l,Blue);
-        }
-      }
-      DrawPx(a+8,b,8);                //Move ball off of screen
-      DrawPx(x,y,Red);                //Redraw player dot
-      DrawPx(g,h,Green);              //Redraw CPU
-      DisplaySlate();                 //Display screen
-    }
-  }
-  for(int g = 0; g < 8; g++)          //Move opponent up and down
-  {
-    for(int h = 0; h < 8; h++)
-    {
-      if(ReadPx(g,h)==Green)
-      {
-        DrawPx(g, h, Blue);
-        DrawPx(g, h+1, Green);
-        DisplaySlate();
       }
     }
   }
-  delay(100);
+}
+
+void DrawBoss()
+{
+  DrawPx(7,4,Dark);
+  DrawPx(7,3,Dark);
 }
