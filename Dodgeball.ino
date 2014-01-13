@@ -13,7 +13,7 @@ int counter = 0;                                                                
 int score = 0;                                                                                      //Set variable to keep track of score
 int ballthrow = 0;                                                                                  //Set variable to check if player is throwing a ball
 Point player = {0,4};                                                                             //Set player starting point
-int hp = 3;                                                                                   //Set variable for player health
+int hp = 5;                                                                                   //Set variable for player health
 Point opponent1 = {8,4};                                                                            //Set starting point for opponent 1
 int hp1 = 3;                                                                                          //Set variable for opponent 1 health
 Point opponent2 = {8,3};                                                                          //Set starting point for opponent 2
@@ -34,7 +34,7 @@ int movement1 = 1;                                                              
 int movement2 = 1;                                                                                 //Variable to check which direction CPU 2 is moving (0 = up, 1 = down, 2 = left, 3 = right)
 int movement3 = 1;                                                                                 //Variable to check which direction CPU 3 is moving (0 = up, 1 = down, 2 = left, 3 = right)
 int movement4 = 1;                                                                                 //Variable to check which direction CPU 4 is moving (0 = up, 1 = down, 2 = left, 3 = right)
-int stage = 1;                                                                                    //Variable to check what level the player is on
+int stage = 8;                                                                                    //Variable to check what level the player is on
 int ball1on = 0;                                                                                  //Variable to check if opponent 1's ball is being thrown
 Point ball1 = {9,4};
 int ball2on = 0;                                                                                  //Variable to check if opponent 2's ball is being thrown
@@ -45,7 +45,10 @@ int ball4on = 0;                                                                
 Point ball4 = {9,2};
 int YouLose = 0;                                                                                  //Variable to check if player lost
 int BossStage = 1;                                                                                //Variable for boss's attack stages based on his hp
-
+int b = 7;                                                                                        //Variables for BOSS letters
+int o = 14;
+int s1 = 20;
+int s2 = 26;
 
 
 void setup()                                                                                      //Setup
@@ -144,7 +147,7 @@ void loop()                                                                     
       if (counter == 0)                                                                           //If the timer is 0
       {
         opponent1on = 1;                                                                        //there is one opponent on the stage
-        hp = 3;
+        hp = 5;
         hp1 = 2;                                                                                    //Set opponent 1's hp to 2
         opponent1.x = 7;                                                                        //Set opponent x coord to 7
         DrawPlayer();                                                                          //Draw Player
@@ -160,7 +163,7 @@ void loop()                                                                     
     }
     
     
-    if (stage == 2)                                                                               //If it's stage 2...       (one CPU, fast movement, balls, low HP)
+    if (stage == 2)                                                                               //If it's stage 2...       (one CPU, fast movement, slow balls, low HP)
     {
       SetAuxLEDs(3);                                                                             //Turn on 2 LED lights
       if (counter == 0)                                                                           //If the timer is 0
@@ -178,6 +181,13 @@ void loop()                                                                     
       if (counter%8 == 0)
       {
         CheckOpponentsOn();
+      }
+      if (opponent1on == 1)
+      {
+        if (counter%40 == 5)
+        {
+          ball1on = 1;
+        }
       }
     }
     
@@ -201,6 +211,13 @@ void loop()                                                                     
       {
         CheckOpponentsOn();
       }
+      if (opponent1on == 1)
+      {
+        if (counter%30 == 5)
+        {
+          ball1on = 1;
+        }
+      }
     }
     
     
@@ -214,18 +231,33 @@ void loop()                                                                     
         opponent2.x = 7;                                                                          //put opponent 2 onto the screen
         opponent1on = 1;                                                                          //there are two opponents on the stage
         opponent2on = 1;                  
+        hp++;                                                                                      //increase player's hp by 1
         hp1 = 3;                                                                                    //reset the enemies' hp to 3
         hp2 = 3;
         DrawPlayer();                                                                              //Draw Player
         DrawPx(opponent1.x,opponent1.y,Green);                                                    //Draw opponent 1
         DrawPx(opponent2.x,opponent2.y,Green);                                                      //Draw opponent 2
-        ///Draw4();                                                                                //Draw a 4 in the center of the screen to show it's stage 3
+        Draw4();                                                                                //Draw a 4 in the center of the screen to show it's stage 3
         DisplaySlate();                                                                            //Display the slate
         delay(2000);                                                                              //Wait a little
       }
       if (counter%8 == 0)
       {
         CheckOpponentsOn();
+      }
+      if (opponent1on == 1)
+      {
+        if (counter%40 == 5)
+        {
+          ball1on = 1;
+        }
+      }
+      if (opponent2on == 1)
+      {
+        if (counter%44 == 5)
+        {
+          ball2on = 1;
+        }
       }
     }
     
@@ -250,12 +282,34 @@ void loop()                                                                     
         DrawPx(opponent1.x,opponent1.y,Green);                                                    //Draw opponent 1
         DrawPx(opponent2.x,opponent2.y,Green);                                                      //Draw opponent 2
         DrawPx(opponent3.x,opponent3.y,Green);                                                      //Draw opponent 3
+        Draw5();
         DisplaySlate();                                                                            //Display the slate
         delay(2000);                                                                              //Wait a little
       }
       if (counter%8 == 0)
       {
         CheckOpponentsOn();
+      }
+      if (opponent1on == 1)
+      {
+        if (counter%40 == 5)
+        {
+          ball1on = 1;
+        }
+      }
+      if (opponent2on == 1)
+      {
+        if (counter%43 == 5)
+        {
+          ball2on = 1;
+        }
+      }
+      if (opponent3on == 1)
+      {
+        if (counter%50 == 4)
+        {
+          ball3on = 1;
+        }
       }
     }
     
@@ -276,6 +330,7 @@ void loop()                                                                     
         opponent1on = 1;                                                                          //there are four opponents on the stage
         opponent2on = 1;                  
         opponent3on = 1;
+        opponent4on = 1;
         hp1 = 2;                                                                                    //reset the enemies' hp
         hp2 = 2;
         hp3 = 2;
@@ -285,12 +340,41 @@ void loop()                                                                     
         DrawPx(opponent2.x,opponent2.y,Green);                                                      //Draw opponent 2
         DrawPx(opponent3.x,opponent3.y,Green);                                                      //Draw opponent 3
         DrawPx(opponent4.x,opponent4.y,Green);                                                      //Draw opponent 4
+        Draw6();
         DisplaySlate();                                                                            //Display the slate
         delay(2000);                                                                              //Wait a little
       }
       if (counter%8 == 0)
       {
         CheckOpponentsOn();
+      }
+      if (opponent1on == 1)
+      {
+        if (counter%50 == 5)
+        {
+          ball1on = 1;
+        }
+      }
+      if (opponent2on == 1)
+      {
+        if (counter%49 == 5)
+        {
+          ball2on = 1;
+        }
+      }
+      if (opponent3on == 1)
+      {
+        if (counter%47 == 4)
+        {
+          ball3on = 1;
+        }
+      }
+      if (opponent4on == 1)
+      {
+        if (counter%57 == 7)
+        {
+          ball4on = 1;
+        }
       }
     }
                                 
@@ -311,6 +395,7 @@ void loop()                                                                     
         opponent1on = 1;                                                                          //there are four opponents on the stage
         opponent2on = 1;                  
         opponent3on = 1;
+        opponent4on = 1;
         hp1 = 3;                                                                                    //reset the enemies' hp
         hp2 = 3;
         hp3 = 3;
@@ -320,6 +405,7 @@ void loop()                                                                     
         DrawPx(opponent2.x,opponent2.y,Green);                                                      //Draw opponent 2
         DrawPx(opponent3.x,opponent3.y,Green);                                                      //Draw opponent 3
         DrawPx(opponent4.x,opponent4.y,Green);                                                      //Draw opponent 4
+        Draw7();
         DisplaySlate();                                                                            //Display the slate
         delay(2000);                                                                              //Wait a little
       }
@@ -327,24 +413,78 @@ void loop()                                                                     
       {
         CheckOpponentsOn();
       }
+      if (opponent1on == 1)
+      {
+        if (counter%40 == 5)
+        {
+          ball1on = 1;
+        }
+      }
+      if (opponent2on == 1)
+      {
+        if (counter%45 == 5)
+        {
+          ball2on = 1;
+        }
+      }
+      if (opponent3on == 1)
+      {
+        if (counter%46 == 5)
+        {
+          ball3on = 1;
+        }
+      }
+      if (opponent4on == 1)
+      {
+        if (counter%39 == 5)
+        {
+          ball4on = 1;
+        }
+      }
     }                            
                                 
                                 //stage 8 (boss)
-                                
+    if (stage == 8)                                                                              //If it's stage 8...          (boss)
+    {
+      SetAuxLEDs(255);                                                                            //Turn on 8 LED lights
+    }         
                                 
                                 
                                 
                                 
     
     
-    counter++;                                                                                   //add 1 to the counter
+    if (stage != 8)
+    {
+      counter++;                            //add 1 to the counter
+    }
     
     
-    
-    if (playerball.x > 7)                                                                        //when the player's ball is off the screen, the ball is no longer moving
+    if (playerball.x > 7)                                                                        //when a ball is off the screen, the ball is no longer in the game
     {
       ballthrow = 0;
     }
+    if (ball1.x < 0)
+    {
+      ball1on = 0;
+    }
+    if (ball2.x < 0)
+    {
+      ball2on = 0;
+    }
+    if (ball3.x < 0);
+    {
+      ball3on = 0;
+    }
+    if (ball4.x < 0);
+    {
+      ball4on = 0;
+    }
+    
+    
+    
+    
+    
     if (ballthrow == 0)                                                                          //if the ball isn't moving, reset its coordinates to the player's
     {
       playerball.x = player.x;
@@ -394,6 +534,10 @@ void loop()                                                                     
     
      
     
+    
+    
+                      //CPU Collision Detection
+    
     if (opponent1.x == opponent2.x)                                                            //if two opponents are standing in the same spot change their coords
     {
       if (opponent1.y == opponent2.y)
@@ -402,6 +546,55 @@ void loop()                                                                     
         opponent1.y--;
       }
     }
+    
+    if (opponent1.x == opponent3.x)
+    {
+      if (opponent1.y == opponent3.y)
+      {
+        opponent1.x--;
+        opponent1.y--;
+      }
+    }
+    
+    if (opponent1.x == opponent4.x)
+    {
+      if (opponent1.y == opponent4.y)
+      {
+        opponent1.x--;
+        opponent1.y--;
+      }
+    }
+    
+    if (opponent2.x == opponent3.x)
+    {
+      if (opponent2.y == opponent3.y)
+      {
+        opponent2.x--;
+        opponent2.y--;
+      }
+    }
+    
+    if (opponent2.x == opponent4.x)
+    {
+      if (opponent2.y == opponent4.y)
+      {
+        opponent2.x--;
+        opponent2.y--;
+      }
+    }
+    
+    if (opponent3.x == opponent4.x)
+    {
+      if (opponent3.y == opponent4.y)
+      {
+        opponent3.x--;
+        opponent3.y--;
+      }
+    }
+    
+    
+    
+    
     
     
     
@@ -484,7 +677,7 @@ void loop()                                                                     
     }
     
     
-    if (player.x == ball1.x)
+    if (player.x == ball1.x)                                                            //if the player is hit by a ball, decrease its hp by 1 and take the ball off the screen
     {
       if (player.y == ball1.y)
       {
@@ -581,6 +774,28 @@ void loop()                                                                     
     {
       DrawPlayerBall();                                                            //Draw the ball
     }
+    if (ball1on == 1)
+    {
+      ball1.x--;
+      DrawPx(ball1.x, ball1.y, Yellow);
+    }
+    if (ball2on == 1)
+    {
+      ball2.x--;
+      DrawPx(ball2.x, ball2.y, Yellow);
+    }
+    if (ball3on == 1)
+    {
+      ball3.x--;
+      DrawPx(ball3.x, ball3.y, Yellow);
+    }
+    if (ball4on == 1)
+    {
+      ball4.x--;
+      DrawPx(ball4.x, ball4.y, Yellow);
+    }
+    
+    
     if (player.x > 3)                                                                //Don't allow the player to go over the court dividing line
     {
       player.x = 3;
@@ -613,8 +828,47 @@ void loop()                                                                     
     {
       DrawPx(opponent4.x, opponent4.y, Green);                                      //Draw opponent 4
     }
-    DrawPlayer();                                                                  //Draw the player
-    if (hp == 3)                                                                    //Draw player hp
+    
+    
+    
+    
+    
+    
+    if (hp == 7)                                                                    //Draw player hp
+    {
+      DrawPx(0,7,Green);
+      DrawPx(1,7,Green);
+      DrawPx(2,7,Green);
+      DrawPx(3,7,Green);
+      DrawPx(4,7,Green);
+      DrawPx(5,7,Green);
+      DrawPx(6,7,Green);
+    }
+    if (hp == 6)
+    {
+      DrawPx(0,7,Green);
+      DrawPx(1,7,Green);
+      DrawPx(2,7,Green);
+      DrawPx(3,7,Green);
+      DrawPx(4,7,Green);
+      DrawPx(5,7,Green);
+    }
+    if (hp == 5)
+    {
+      DrawPx(0,7,Green);
+      DrawPx(1,7,Green);
+      DrawPx(2,7,Green);
+      DrawPx(3,7,Green);
+      DrawPx(4,7,Green);
+    }
+    if (hp == 4)
+    {
+      DrawPx(0,7,Green);
+      DrawPx(1,7,Green);
+      DrawPx(2,7,Green);
+      DrawPx(3,7,Green);
+    }
+    if (hp == 3)                                                                   
     {
       DrawPx(0,7,Green);
       DrawPx(1,7,Green);
@@ -629,14 +883,96 @@ void loop()                                                                     
     {
       DrawPx(0,7,Green);
     }
+    
+    
+    
+    DrawPlayer();                                                                  //Draw the player
+    if (stage == 8)                                                                //Draw BOSS scrolling across screen
+    {
+      if (counter == 0)
+      {
+        delay(70);
+        BossTitle();
+        b--;
+        o--;
+        s1--;
+        s2--;
+        if (s2 == -8)
+        {
+          counter = 1;
+        }
+      }
+        
+      if (counter == 1)
+      {
+        for (int i = 0; i<8; i++)
+        {
+          DrawPx(7,i,Dark);
+        }
+        DisplaySlate();
+        delay(500);
+        counter = 2;
+      }
+        
+      if (counter == 2)
+      {
+        for (int i = 0; i<8; i++)
+        {
+          DrawPx(7,i,Dark);
+          DrawPx(6,i,Dark);
+        }
+        DisplaySlate();
+        delay(500);
+        counter = 3;
+      }
+        
+      if (counter == 3)
+      {
+        for (int i = 0; i<8; i++)
+        {
+          DrawPx(7,i,Dark);
+          DrawPx(6,i,Dark);
+          DrawPx(5,i,Dark);
+        }
+        DisplaySlate();
+        delay(500);
+        counter = 4;
+      }
+        
+      if (counter == 4)
+      {
+        for (int i = 0; i<8; i++)
+        {
+          DrawPx(7,i,Dark);
+          DrawPx(6,i,Dark);
+          DrawPx(5,i,Dark);
+        }
+        DrawPx(5,3,Blue);
+        DrawPx(5,4,Blue);
+        DrawPx(6,2,Blue);
+        DrawPx(6,5,Blue);
+        counter++;
+      }
+        
+      if (counter > 4)
+      {
+        Boss1();
+        DisplaySlate();
+        delay(1000);
+      }
+    }
     DisplaySlate();                                                                //Display the slate
     delay(100);                                                                    //Wait a little
     ClearSlate();                                                                  //Clear the slate
     if (hp == 0)                                                                  //if the player's hp is 0
     {
       YouLose = 1;                                                                //the player loses
+      DeadSound();
     }
-    EndStage();                                                                   //Check if the stage is finished
+    if (stage != 8)
+    {
+      EndStage();                                                                   //Check if the stage is finished
+    }
   }
 }
 
@@ -731,12 +1067,18 @@ void EndStage()                                                                /
             player.y = 4;
             delay(500);
             DrawCourt();                                                      //Draw the Court
+            ball1on = 0;
+            ball2on = 0;
+            ball3on = 0;
+            ball4on = 0;
           }
         }
       }
     }
   }
 }
+
+
 
 
 
@@ -1030,8 +1372,13 @@ void Loss()
     if (Button_A)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1039,8 +1386,13 @@ void Loss()
     if (Button_B)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1048,8 +1400,13 @@ void Loss()
     if (Button_Up)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1057,8 +1414,13 @@ void Loss()
     if (Button_Down)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1066,8 +1428,13 @@ void Loss()
     if (Button_Left)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1075,8 +1442,13 @@ void Loss()
     if (Button_Right)
     {
       YouLose = 0;
-      stage = 1;
-      hp = 3;
+      stage = 0;
+      opponent1on = 0;
+      opponent2on = 0;
+      opponent3on = 0;
+      opponent4on = 0;
+      bosson = 0;
+      hp = 5;
       opponent1.y = 4;
       DrawCourt();
       DisplaySlate();
@@ -1098,86 +1470,159 @@ void Loss()
                 //DRAWING
 
 
-void DrawBoss()                                                              //Draw the Boss
+void Boss1()                                                              //Draw Boss Stage 1
 {
-  DrawPx(7,4,Dark);
-  DrawPx(7,3,Dark);
+  for (int i = 0; i<8; i++)
+  {
+    DrawPx(7,i,Dark);
+  }
+  DrawPx(6,0,Dark);
+  DrawPx(6,7,Dark);
+  DrawPx(6,3,Dark);
+  DrawPx(6,4,Dark);
+  DrawPx(5,0,Dark);
+  DrawPx(5,1,Dark);
+  DrawPx(5,6,Dark);
+  DrawPx(5,7,Dark);
 }
 
 
 void Draw1()
 {
-  DrawPx(2,1,White);
-  DrawPx(3,1,White);
-  DrawPx(4,1,White);
-  DrawPx(5,1,White);
-  DrawPx(6,1,White);
-  DrawPx(4,2,White);
-  DrawPx(4,3,White);
-  DrawPx(4,4,White);
-  DrawPx(4,5,White);
-  DrawPx(4,6,White);
-  DrawPx(3,5,White);
-  DrawPx(2,4,White);
+  DrawPx(2,1,Yellow);
+  DrawPx(3,1,Yellow);
+  DrawPx(4,1,Yellow);
+  DrawPx(5,1,Yellow);
+  DrawPx(6,1,Yellow);
+  DrawPx(4,2,Yellow);
+  DrawPx(4,3,Yellow);
+  DrawPx(4,4,Yellow);
+  DrawPx(4,5,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(3,5,Yellow);
+  DrawPx(2,4,Yellow);
 }
   
 void Draw2()
 {
-  DrawPx(1,1,White);
-  DrawPx(2,1,White);
-  DrawPx(3,1,White);
-  DrawPx(4,1,White);
-  DrawPx(5,1,White);
-  DrawPx(6,1,White);
-  DrawPx(1,2,White);
-  DrawPx(1,3,White);
-  DrawPx(1,4,White);
-  DrawPx(2,4,White);
-  DrawPx(3,4,White);
-  DrawPx(4,4,White);
-  DrawPx(5,4,White);
-  DrawPx(6,4,White);
-  DrawPx(6,5,White);
-  DrawPx(6,6,White);
-  DrawPx(5,6,White);
-  DrawPx(4,6,White);
-  DrawPx(3,6,White);
-  DrawPx(2,6,White);
-  DrawPx(1,6,White);
+  DrawPx(1,1,Yellow);
+  DrawPx(2,1,Yellow);
+  DrawPx(3,1,Yellow);
+  DrawPx(4,1,Yellow);
+  DrawPx(5,1,Yellow);
+  DrawPx(6,1,Yellow);
+  DrawPx(1,2,Yellow);
+  DrawPx(1,3,Yellow);
+  DrawPx(1,4,Yellow);
+  DrawPx(2,4,Yellow);
+  DrawPx(3,4,Yellow);
+  DrawPx(4,4,Yellow);
+  DrawPx(5,4,Yellow);
+  DrawPx(6,4,Yellow);
+  DrawPx(6,5,Yellow);
+  DrawPx(6,6,Yellow);
+  DrawPx(5,6,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(3,6,Yellow);
+  DrawPx(2,6,Yellow);
+  DrawPx(1,6,Yellow);
 }
 
 void Draw3()
 {
-  DrawPx(1,1,White);
-  DrawPx(2,1,White);
-  DrawPx(3,1,White);
-  DrawPx(4,1,White);
-  DrawPx(5,1,White);
-  DrawPx(6,1,White);
-  DrawPx(6,2,White);
-  DrawPx(6,3,White);
-  DrawPx(6,4,White);
-  DrawPx(5,4,White);
-  DrawPx(4,4,White);
-  DrawPx(3,4,White);
-  DrawPx(6,5,White);
-  DrawPx(6,6,White);
-  DrawPx(5,6,White);
-  DrawPx(4,6,White);
-  DrawPx(3,6,White);
-  DrawPx(2,6,White);
-  DrawPx(1,6,White);
+  DrawPx(1,1,Yellow);
+  DrawPx(2,1,Yellow);
+  DrawPx(3,1,Yellow);
+  DrawPx(4,1,Yellow);
+  DrawPx(5,1,Yellow);
+  DrawPx(6,1,Yellow);
+  DrawPx(6,2,Yellow);
+  DrawPx(6,3,Yellow);
+  DrawPx(6,4,Yellow);
+  DrawPx(5,4,Yellow);
+  DrawPx(4,4,Yellow);
+  DrawPx(3,4,Yellow);
+  DrawPx(6,5,Yellow);
+  DrawPx(6,6,Yellow);
+  DrawPx(5,6,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(3,6,Yellow);
+  DrawPx(2,6,Yellow);
+  DrawPx(1,6,Yellow);
 }
 
-////void Draw4()
+void Draw4()
+{
+  DrawPx(2,3,Yellow);
+  DrawPx(2,4,Yellow);
+  DrawPx(2,5,Yellow);
+  DrawPx(2,6,Yellow);
+  DrawPx(3,3,Yellow);
+  DrawPx(4,3,Yellow);
+  DrawPx(5,1,Yellow);
+  DrawPx(5,2,Yellow);
+  DrawPx(5,3,Yellow);
+  DrawPx(5,4,Yellow);
+  DrawPx(5,5,Yellow);
+  DrawPx(5,6,Yellow);
+}
 
-////void Draw5()
+void Draw5()
+{
+  DrawPx(1,1,Yellow);
+  DrawPx(2,1,Yellow);
+  DrawPx(3,1,Yellow);
+  DrawPx(4,1,Yellow);
+  DrawPx(5,2,Yellow);
+  DrawPx(5,3,Yellow);
+  DrawPx(4,4,Yellow);
+  DrawPx(3,4,Yellow);
+  DrawPx(2,4,Yellow);
+  DrawPx(1,4,Yellow);
+  DrawPx(1,5,Yellow);
+  DrawPx(1,6,Yellow);
+  DrawPx(2,6,Yellow);
+  DrawPx(3,6,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(5,6,Yellow);
+}
 
-////void Draw6()
+void Draw6()
+{
+  DrawPx(1,1,Yellow);
+  DrawPx(1,2,Yellow);
+  DrawPx(1,3,Yellow);
+  DrawPx(1,4,Yellow);
+  DrawPx(1,5,Yellow);
+  DrawPx(1,6,Yellow);
+  DrawPx(2,1,Yellow);
+  DrawPx(3,1,Yellow);
+  DrawPx(4,1,Yellow);
+  DrawPx(5,1,Yellow);
+  DrawPx(5,2,Yellow);
+  DrawPx(5,3,Yellow);
+  DrawPx(5,4,Yellow);
+  DrawPx(2,4,Yellow);
+  DrawPx(3,4,Yellow);
+  DrawPx(4,4,Yellow);
+  DrawPx(2,6,Yellow);
+  DrawPx(3,6,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(5,6,Yellow);
+}
 
-////void Draw7()
-
-////void Draw8()
+void Draw7()
+{
+  DrawPx(2,6,Yellow);
+  DrawPx(3,6,Yellow);
+  DrawPx(4,6,Yellow);
+  DrawPx(5,6,Yellow);
+  DrawPx(5,5,Yellow);
+  DrawPx(5,4,Yellow);
+  DrawPx(5,3,Yellow);
+  DrawPx(5,2,Yellow);
+  DrawPx(5,1,Yellow);
+}
 
 void DrawX()
 {
@@ -1223,6 +1668,182 @@ void DrawX()
   DrawPx(3,5,Red);
 }
 
+void BossTitle()
+{
+  if (b < 8)
+  {
+    if (b >= 0)
+    {
+      DrawPx(b,1,Yellow);
+      DrawPx(b,2,Yellow);
+      DrawPx(b,3,Yellow);
+      DrawPx(b,4,Yellow);
+      DrawPx(b,5,Yellow);
+      DrawPx(b,6,Yellow);
+    }
+  }
+  if (b+1 < 8)
+  {
+    if (b+1 >= 0)
+    {
+      DrawPx(b+1,1,Yellow);
+      DrawPx(b+1,6,Yellow);
+      DrawPx(b+1,4,Yellow);
+    }
+  }
+  if (b+2 < 8)
+  {
+    if (b+2 >= 0)
+    {
+      DrawPx(b+2,1,Yellow);
+      DrawPx(b+2,6,Yellow);
+      DrawPx(b+2,4,Yellow);
+    }
+  }
+  if (b+3 < 8)
+  {
+    if (b+3 >= 0)
+    {
+      DrawPx(b+3,1,Yellow);
+      DrawPx(b+3,6,Yellow);
+      DrawPx(b+3,4,Yellow);
+    }
+  }
+  if (b+4 < 8)
+  {
+    if (b+4 >= 0)
+    {
+      DrawPx(b+4,1,Yellow);
+      DrawPx(b+4,2,Yellow);
+      DrawPx(b+4,3,Yellow);
+      DrawPx(b+4,5,Yellow);
+      DrawPx(b+4,6,Yellow);
+    }
+  }
+  
+  if (o < 8)
+  {
+    if (o >= 0)
+    {
+      DrawPx(o,1,Yellow);
+      DrawPx(o,2,Yellow);
+      DrawPx(o,3,Yellow);
+      DrawPx(o,4,Yellow);
+      DrawPx(o,5,Yellow);
+      DrawPx(o,6,Yellow);
+    }
+  }
+  if (o+1 < 8)
+  {
+    if (o+1 >= 0)
+    {
+      DrawPx(o+1,1,Yellow);
+      DrawPx(o+1,6,Yellow);
+    }
+  }
+  if (o+2 < 8)
+  {
+    if (o+2 >= 0)
+    {
+      DrawPx(o+2,1,Yellow);
+      DrawPx(o+2,6,Yellow);
+    }
+  }
+  if (o+3 < 8)
+  {
+    if (o+3 >= 0)
+    {
+      DrawPx(o+3,1,Yellow);
+      DrawPx(o+3,6,Yellow);
+      DrawPx(o+3,2,Yellow);
+      DrawPx(o+3,3,Yellow);
+      DrawPx(o+3,4,Yellow);
+      DrawPx(o+3,5,Yellow);
+      DrawPx(o+3,6,Yellow);
+    }
+  }
+  
+  if (s1 < 8)
+  {
+    if (s1 >= 0)
+    {
+      DrawPx(s1,1,Yellow);
+      DrawPx(s1,4,Yellow);
+      DrawPx(s1,5,Yellow);
+      DrawPx(s1,6,Yellow);
+    }
+  }
+  if (s1+1 < 8)
+  {
+    if (s1+1 >= 0)
+    {
+      DrawPx(s1+1,1,Yellow);
+      DrawPx(s1+1,4,Yellow);
+      DrawPx(s1+1,6,Yellow);
+    }
+  }
+  if (s1+2 < 8)
+  {
+    if (s1+2 >= 0)
+    {
+      DrawPx(s1+2,1,Yellow);
+      DrawPx(s1+2,4,Yellow);
+      DrawPx(s1+2,6,Yellow);
+    }
+  }
+  if (s1+3 < 8)
+  {
+    if (s1+3 >= 0)
+    {
+      DrawPx(s1+3,1,Yellow);
+      DrawPx(s1+3,2,Yellow);
+      DrawPx(s1+3,3,Yellow);
+      DrawPx(s1+3,4,Yellow);
+      DrawPx(s1+3,6,Yellow);
+    }
+  }
+  
+  if (s2 < 8)
+  {
+    if (s2 >= 0)
+    {
+      DrawPx(s2,1,Yellow);
+      DrawPx(s2,4,Yellow);
+      DrawPx(s2,5,Yellow);
+      DrawPx(s2,6,Yellow);
+    }
+  }
+  if (s2+1 < 8)
+  {
+    if (s2+1 >= 0)
+    {
+      DrawPx(s2+1,1,Yellow);
+      DrawPx(s2+1,4,Yellow);
+      DrawPx(s2+1,6,Yellow);
+    }
+  }
+  if (s2+2 < 8)
+  {
+    if (s2+2 >= 0)
+    {
+      DrawPx(s2+2,1,Yellow);
+      DrawPx(s2+2,4,Yellow);
+      DrawPx(s2+2,6,Yellow);
+    }
+  }
+  if (s2+3 < 8)
+  {
+    if (s2+3 >= 0)
+    {
+      DrawPx(s2+3,1,Yellow);
+      DrawPx(s2+3,2,Yellow);
+      DrawPx(s2+3,3,Yellow);
+      DrawPx(s2+3,4,Yellow);
+      DrawPx(s2+3,6,Yellow);
+    }
+  }
+}
+
 
 
 
@@ -1246,7 +1867,6 @@ void StartSound()
 
 void DeadSound()
 {
-
   Tone_Start(ToneB4, 100); 
   while (MakingSound)
     {}//Tone_Update(); 
